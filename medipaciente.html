@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recordatorio de Medicación - Registro</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-content">
+                <!-- Logo -->
+                <a href="#" class="navbar-logo">
+                    <div class="navbar-logo-icon">🧑‍⚕️</div>
+                    <span>MediSalud</span>
+                </a>
+
+                <!-- Desktop Navigation -->
+                <ul class="nav-links">
+                    <li><a href="index.html" class="nav-link ">Crear paciente</a></li>
+                    <li><a href="medicamentos.html" class="nav-link ">Asignar medicamentos</a></li>
+                    <li><a href="medipaciente.html" class="nav-link active">asignar medicamentos a pacientes</a></li>
+                    <li><a href="administracion.html" class="nav-link">Administración</a></li>
+                </ul>
+
+                <!-- Mobile Menu Button -->
+                <div class="mobile-menu-btn" id="mobileMenuBtn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div class="mobile-menu" id="mobileMenu">
+            <button class="close-menu" id="closeMenuBtn">&times;</button>
+            <a href="index.html" class="nav-link">Crear paciente</a>
+            <a href="medicamentos.html" class="nav-link">Asignar medicamentos</a>
+            <a href="medipaciente.html" class="nav-link">asignar medicamentos a pacientes</a>
+            <a href="administracion.html" class="nav-link">Administración</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="bg-animation">
+            <div class="floating-shape shape-1"></div>
+            <div class="floating-shape shape-2"></div>
+            <div class="floating-shape shape-3"></div>
+        </div>
+
+        <div class="container">
+            <div class="header">
+                <div class="logo"></div>
+                <h1>Creación de medicamentos a pacientes</h1>
+                <p class="subtitle">Asignar medicamentos a pacientes</p>
+            </div>
+
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="medicamento">Medicamento</label>
+                    <select name="medicamento" id="selectMedicine" required>
+                        <option value="select" disabled selected>Selecciona el medicamento</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="paciente">Paciente</label>
+                    <select name="paciente" id="selectPatient" required>
+                        <option value="select" disabled selected>Selecciona el paciente</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="time_reminder">Cada cuantas horas</label>
+                    <input type="number" id="time_reminder" name="time_reminder" min="0" max="48" required placeholder="8">
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    Crear recordatorio de medicación
+                </button>
+            </form>
+        </div>
+    </div>
+
+<script src="js/index.js"></script>
+<script src="js/medipaciente.js"></script>
+</body>
+</html>

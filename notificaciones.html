@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Notificaciones</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            max-width: 600px;
+            width: 100%;
+            overflow: hidden;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content {
+            padding: 40px 30px;
+        }
+
+        .user-info {
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f2ff 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-left: 4px solid #4f46e5;
+        }
+
+        .user-info h3 {
+            color: #4f46e5;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .user-detail {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .user-detail strong {
+            color: #374151;
+            margin-left: 8px;
+        }
+
+        .notification-options {
+            margin: 30px 0;
+        }
+
+        .option-group {
+            margin-bottom: 25px;
+        }
+
+        .option-group h4 {
+            color: #374151;
+            font-size: 16px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-group h4::before {
+            content: '📧';
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f9fafb;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .option:hover {
+            background: #f3f4f6;
+            border-color: #e5e7eb;
+        }
+
+        .option-info {
+            flex: 1;
+        }
+
+        .option-title {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 4px;
+        }
+
+        .option-description {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e0;
+            transition: 0.3s;
+            border-radius: 26px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        input:checked + .slider {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            flex: 1;
+            min-width: 150px;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+            border: 2px solid #e5e7eb;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+            border-color: #d1d5db;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+        }
+
+        .status-message {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+        }
+
+        .status-message.success {
+            background: #ecfdf5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .status-message.error {
+            background: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .footer {
+            background: #f9fafb;
+            padding: 20px 30px;
+            text-align: center;
+            font-size: 14px;
+            color: #6b7280;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #4f46e5;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .header, .content {
+                padding: 25px 20px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔔 Gestión de Notificaciones</h1>
+            <p>Personaliza tus preferencias de notificación</p>
+        </div>
+
+        <div class="content">
+            <div class="user-info">
+                <h3>Información del Usuario</h3>
+                <div class="user-detail">
+                    👤 <strong id="userName">Cargando...</strong>
+                </div>
+                <div class="user-detail">
+                    📧 <strong id="userEmail">Cargando...</strong>
+                </div>
+                <div class="user-detail">
+                    💊 <strong id="idreminder">Cargando...</strong>
+                </div>
+                <div class="user-detail" style="display: none;">
+                    📅 <strong id="idpatient" >Cargando...</strong>
+                </div>
+                <div class="user-detail" style="display: none;">
+                    🕙 <strong id="idmedicine">Cargando...</strong>
+                </div>
+                <div class="user-detail" style="display: none;">
+                    📅 <strong id="date">Cargando...</strong>
+                </div>
+                <div class="user-detail">
+                    ⏰ <strong id="time">Cargando...</strong><strong>horas</strong>
+                </div>
+                
+            </div>
+
+            <div class="notification-options">
+                <div class="option-group">
+                    <h4>Recordatorios de Medicación</h4>
+                    
+                    <div class="option" onclick="toggleOption('medication-reminders')">
+                        <div class="option-info">
+                            <div class="option-title">Recordatorios por Email</div>
+                            <div class="option-description">Recibir notificaciones de medicamentos por correo electrónico</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="medication-reminders" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+
+
+            <div id="statusMessage" class="status-message"></div>
+        </div>
+
+        <div class="footer">
+            <p>Puedes cambiar estas preferencias en cualquier momento.</p>
+            <p><strong>Sistema de Gestión Médica</strong> | Protegemos tu privacidad</p>
+        </div>
+    </div>
+
+<script>
+    // Variables globales
+    let idreminder = null;
+    let userInfo = {};
+    let preferences = {};
+
+    // Inicialización cuando carga la página
+    document.addEventListener('DOMContentLoaded', function() {
+        initializePage();
+    });
+
+    function initializePage() {
+        // Obtener ID de la URL
+        idreminder = getidreminderFromUrl();
+        
+        if (idreminder) {
+            loadUserPreferences(idreminder);
+            getReminder(); // ✅ Se ejecuta solo si hay un ID válido
+        } else {
+            showError('No se proporcionó un ID de usuario válido');
+            loadDemoData();
+        }
+    }
+
+    function getidreminderFromUrl() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('id') || urlParams.get('idreminder') || urlParams.get('user');
+    }
+
+    // ❌ CORREGIDO: Parámetros agregados a la función
+    function loadUserInfo(name, email, medicineName) {
+        userInfo = {
+            id: medicineName,
+            name: name,
+            email: email,
+        };
+        updateUserInfoDisplay();
+    }
+
+    function loadDemoData() {
+        userInfo = {
+            id: 'DEMO_USER',
+            name: 'Usuario Demo',
+            email: 'demo@email.com'
+        };
+        updateUserInfoDisplay();
+    }
+
+    function updateUserInfoDisplay() {
+        // ✅ Verificar que los elementos existan antes de actualizar
+        const idElement = document.getElementById('idreminder');
+        const nameElement = document.getElementById('userName');
+        const emailElement = document.getElementById('userEmail');
+        
+        if (idElement) idElement.textContent = userInfo.id;
+        if (nameElement) nameElement.textContent = userInfo.name;
+        if (emailElement) emailElement.textContent = userInfo.email;
+    }
+
+    function loadUserPreferences(id) {
+        setTimeout(() => {
+            preferences = {
+                'urgent-reminders': true,
+                'system-updates': true,
+                'appointment-reminders': true,
+                'promotions': false
+            };
+            updatePreferencesDisplay();
+        }, 1200);
+    }
+
+    function updatePreferencesDisplay() {
+        Object.keys(preferences).forEach(key => {
+            const checkbox = document.getElementById(key);
+            if (checkbox) {
+                checkbox.checked = preferences[key];
+            }
+        });
+    }
+
+    function toggleOption(optionId) {
+        const checkbox = document.getElementById(optionId);
+        checkbox.checked = !checkbox.checked;
+        preferences[optionId] = checkbox.checked;
+
+        const option = checkbox.closest('.option');
+        option.style.transform = 'scale(0.98)';
+        setTimeout(() => {
+            option.style.transform = 'scale(1)';
+        }, 150);
+    }
+
+    function savePreferences() {
+        const btn = event.target;
+        const originalText = btn.innerHTML;
+
+        btn.innerHTML = '<span class="loading"></span> Guardando...';
+        btn.disabled = true;
+
+        const currentPreferences = {};
+        document.querySelectorAll('.toggle-switch input').forEach(input => {
+            currentPreferences[input.id] = input.checked;
+        });
+
+        setTimeout(() => {
+            preferences = { ...currentPreferences };
+            const success = Math.random() > 0.1;
+
+            if (success) {
+                showSuccess('✅ Preferencias guardadas correctamente');
+                console.log('Preferencias guardadas:', preferences);
+            } else {
+                showError('❌ Error al guardar las preferencias. Inténtalo de nuevo.');
+            }
+
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }, 2000);
+    }
+
+    function loadDefaults() {
+        const defaultPreferences = {
+            'medication-reminders': true,
+            'urgent-reminders': true,
+            'system-updates': true,
+            'appointment-reminders': true,
+            'promotions': false
+        };
+
+        Object.keys(defaultPreferences).forEach(key => {
+            const checkbox = document.getElementById(key);
+            if (checkbox) {
+                checkbox.checked = defaultPreferences[key];
+            }
+        });
+
+        preferences = { ...defaultPreferences };
+        showSuccess('🔄 Valores por defecto restaurados');
+    }
+
+    function unsubscribeAll() {
+        if (confirm('¿Estás seguro de que quieres desactivar TODAS las notificaciones?\n\nEsto incluye recordatorios importantes de medicación.')) {
+            document.querySelectorAll('.toggle-switch input').forEach(input => {
+                input.checked = false;
+            });
+
+            Object.keys(preferences).forEach(key => {
+                preferences[key] = false;
+            });
+
+            showSuccess('🚫 Todas las notificaciones han sido desactivadas');
+
+            setTimeout(() => {
+                if (confirm('¿Quieres regresar a la página principal?')) {
+                    window.location.href = '/';
+                }
+            }, 3000);
+        }
+    }
+
+    function showSuccess(message) {
+        const statusDiv = document.getElementById('statusMessage');
+        if (statusDiv) {
+            statusDiv.className = 'status-message success';
+            statusDiv.innerHTML = message;
+            statusDiv.style.display = 'flex';
+
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 5000);
+        }
+    }
+
+    function showError(message) {
+        const statusDiv = document.getElementById('statusMessage');
+        if (statusDiv) {
+            statusDiv.className = 'status-message error';
+            statusDiv.innerHTML = message;
+            statusDiv.style.display = 'flex';
+
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 5000);
+        }
+    }
+
+    function getCurrentPreferences() {
+        const current = {};
+        document.querySelectorAll('.toggle-switch input').forEach(input => {
+            current[input.id] = input.checked;
+        });
+        return current;
+    }
+
+    async function getReminder() {
+        const url = `http://localhost:8080/api/v1/reminder/${idreminder}`;
+
+        let headersList = {
+            "Accept": "*/*",
+            "User-Agent": "web",
+            "Content-Type": "application/json"
+        };
+
+        try {
+            const response = await fetch(url, {
+                method: "GET",
+                headers: headersList
+            });
+
+            // ✅ CORREGIDO: Verificar si la respuesta es exitosa
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const usuarios = await response.json();
+            console.log(usuarios);
+
+            // ✅ CORREGIDO: Verificar que los datos existan antes de usarlos
+            if (usuarios && usuarios.patient && usuarios.medicine) {
+                loadUserInfo(
+                    usuarios.patient._name || usuarios.patient.name, 
+                    usuarios.patient.email, 
+                    usuarios.medicine._name || usuarios.medicine.name
+                );
+                document.getElementById("idpatient").textContent = usuarios.patient.id_user;
+                document.getElementById("idmedicine").textContent = usuarios.medicine.id_medicine;
+                document.getElementById("date").textContent = usuarios.date_reminder;
+                document.getElementById("time").textContent = usuarios.time_reminder;
+                document.getElementById("medication-reminders").checked = usuarios.status;
+            } else {
+                throw new Error('Datos de respuesta incompletos');
+            }
+
+        } catch (error) {
+            console.error("Error al obtener el recordatorio:", error);
+            showError('❌ No se pudo cargar la información del recordatorio');
+            // ✅ Cargar datos demo como fallback
+            loadDemoData();
+        }
+
+        
+    }
+    async function updateReminder(check) {
+        const url = `http://localhost:8080/api/v1/reminder/${idreminder}`;
+        let headersList = {
+            "Accept": "*/*",
+            "User-Agent": "web",
+            "Content-Type": "application/json"
+        };
+
+        try {
+        const response = await fetch(url, {
+            method: "PUT",
+            headers: headersList,
+            body: JSON.stringify({
+                "patient": document.getElementById("idpatient").textContent,
+                "medicine": document.getElementById("idmedicine").textContent,
+                "time_reminder": document.getElementById("time").textContent,
+                "date_reminder": document.getElementById("date").textContent,
+                "status": check
+            })
+        });
+
+            // ✅ CORREGIDO: Verificar si la respuesta es exitosa
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const usuarios = await response.json();
+            showSuccess('✅ Recordatorio actualizado correctamente');
+        } catch (error) {
+            console.error("Error al actualizar el recordatorio:", error);
+            showError('❌ No se pudo actualizar la información del recordatorio');
+        }
+    }
+        document.getElementById('medication-reminders').addEventListener("click", function() {
+            if (!this.checked) {
+                check= true;
+            } else {
+                check= false;
+            }
+            updateReminder(check);
+
+        });
+</script>
+
+
+</body>
+</html>
